@@ -1,0 +1,54 @@
+{
+  "name": "genserver",
+  "version": "1.0.0",
+  "description": "Erlang / Elixir genserver implementation using es6 generators for structuring together complicated multi-process asynchronous IO actions",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "jest --notify",
+    "tslint": "tslint -c tslint.json -p tsconfig.json",
+    "build": "npm run build-ts && npm run tslint",
+    "build-ts": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/foxnewsnetwork/genserver.git"
+  },
+  "keywords": [
+    "erlang",
+    "elixir",
+    "gen",
+    "server",
+    "generator",
+    "io",
+    "async",
+    "saga"
+  ],
+  "author": "Thomas Chen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/foxnewsnetwork/genserver/issues"
+  },
+  "homepage": "https://github.com/foxnewsnetwork/genserver#readme",
+  "devDependencies": {
+    "@types/jest": "^20.0.5",
+    "jest": "^20.0.4",
+    "ts-jest": "^20.0.7",
+    "tslint": "^5.5.0",
+    "typescript": "^2.4.2"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testMatch": [
+      "**/test/**/*.test.(ts|js)"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "json",
+      "jsx"
+    ]
+  }
+}
