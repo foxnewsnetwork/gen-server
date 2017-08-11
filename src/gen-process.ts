@@ -5,8 +5,12 @@ import { Reply } from './reply';
 export default async function* genProcess<State>(API: GenServer<State>, initState: State) {
   let nextState = initState;
   let method;
+
+  console.warn('=======');
   while (method !== 'terminate') {
+    console.warn('+++++\n', nextState, '\n++++');
     const input = yield nextState;
+    console.warn('---------\n', input, '\n--------');
     const { message, from } = input;
     method = input.method;
 

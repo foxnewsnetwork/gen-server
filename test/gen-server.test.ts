@@ -1,56 +1,43 @@
 import { Atom } from '../src/atom';
-import { GenServer, start, call } from '../src/gen-server';
+import { start, call } from '../src/gen-server';
 import { PS4, Game } from './mocks/ps4';
 import { Reply } from '../src/reply';
+import { Message } from '../src/message';
+import { LaunchMessage, LaunchServer } from './mocks/launch-server';
 
-class LaunchState {
-  ps4: PS4
-  game: Game
-  constructor(ps4: PS4, game: Game) {
-    this.ps4 = ps4;
-    this.game = game;
-  }
-}
-
-const LaunchServer: GenServer<LaunchState> = {
-  init(game) {
-    const ps4 = new PS4();
-
-    return new Promise((resolve) => {
-      const initState = new LaunchState(ps4, game);
-      const reply = new Reply(initState, Atom.ok)
-      resolve(reply);
-    });
-  },
-  handleCall() {
-
-  },
-  handleCast() {
-
-  },
-  handleInfo() {
-
-  },
-  terminate() {
-
-  }
-};
-
-describe('mock sanity', () => {
+describe('basic usage', () => {
+  let startReply;
+  let game;
+  beforeEach(async () => {
+    game = Game.mock();
+    startReply = await start(LaunchServer, null);
+  });
   test('games can be mocked', () => {
-    const game = Game.mock();
     expect(game).toBeDefined();
     expect(game.id).toBeDefined();
   });
-});
-
-describe('basic usage', () => {
-  test('can manipulate really bad async IO apis', async () => {
-    const { process, status } = await start(LaunchServer, null);
+  test('server processes can start', () => {
+    const { process, status } = startReply;
     expect(process.next).toBeDefined();
     expect(status).toBe(Atom.ok);
-    // const { status } = await call(process, { type: 'requestAuthCode', payload: game });
-    // const { status } = await call(process, { type: 'requestApiCode', paylod: game });
-    // const { status } = await call(process, { type: 'launchGame', payload: game });
+  });
+  describe('calling messages', () => {
+    let requestAuthReply;
+    beforeEach(async () => {
+      const { process } = startReply;
+      requestAuthReply = await call(process, new LaunchMessage('requestAuthCode', game));
+    });
+    test('we should get an ok reply', () => {
+      const { status } = requestAuthReply;
+      expect(status).toBe(Atom.ok);
+    });
+    test('new state should have game', () => {
+      const { state } = requestAuthReply;
+      expect(state.game).toBe(game);
+    });
+    test('we should have an auth code', () => {
+      const { payload: authCode } = requestAuthReply;
+      expect(authCode).toBeDefined();
+    });
   });
 });
