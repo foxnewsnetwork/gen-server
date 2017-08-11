@@ -6,7 +6,7 @@ import { Reply } from '../src/reply';
 class LaunchState {
   ps4: PS4
   game: Game
-  constructor(ps4, game) {
+  constructor(ps4: PS4, game: Game) {
     this.ps4 = ps4;
     this.game = game;
   }

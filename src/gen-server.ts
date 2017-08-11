@@ -21,7 +21,7 @@ export interface GenServer<State> {
   */
 }
 
-export async function call<State, M>(this: AsyncIterableIterator<State>, ais: AsyncIterableIterator<State>, msg: Message<M>, timeout=5000): Promise<Reply<State>> {
+export async function call<State>(this: AsyncIterableIterator<State>, ais: AsyncIterableIterator<State>, msg: Message, timeout=5000): Promise<Reply<State>> {
   const { done, value: nextState } = await ais.next({
     from: this,
     message: msg,

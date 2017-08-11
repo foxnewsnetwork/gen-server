@@ -31,13 +31,31 @@
   "homepage": "https://github.com/foxnewsnetwork/genserver#readme",
   "devDependencies": {
     "@types/jest": "^20.0.5",
+    "babel-cli": "^6.24.1",
+    "babel-jest": "^20.0.3",
+    "babel-plugin-transform-regenerator": "^6.24.1",
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-es2017": "^6.24.1",
+    "babel-preset-stage-3": "^6.24.1",
     "jest": "^20.0.4",
+    "regenerator-runtime": "^0.10.5",
     "ts-jest": "^20.0.7",
     "tslint": "^5.5.0",
     "typescript": "^2.4.2"
   },
   "jest": {
+    "globals": {
+      "ts-jest": {
+        "useBabelrc": true,
+        "tsConfigFile": "tsconfig.json"
+      }
+    },
+    "setupFiles": [
+      "<rootDir>/test/setup/babel-polyfill.js"
+    ],
     "transform": {
+      "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
       "^.+\\.tsx?$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     },
     "testMatch": [
