@@ -1,38 +1,27 @@
 import { GenServer } from './gen-server';
 import { Atom } from './atom';
-import { Reply } from './reply';
+import { DidInitMessage, Message } from './message';
 
-export default async function* genProcess<State>(API: GenServer<State>, initState: State) {
-  let nextState = initState;
+export default async function* genProcess<State>(API: GenServer<State>, didinitMsg: DidInitMessage<State>) {
+  let nextMsg: Message<State> = didinitMsg;
   let method;
 
-  console.warn('=======');
-  while (method !== 'terminate') {
-    console.warn('+++++\n', nextState, '\n++++');
-    const input = yield nextState;
-    console.warn('---------\n', input, '\n--------');
-    const { message, from } = input;
-    method = input.method;
+  while (true) {
+    const orderMsg = yield nextMsg;
+    method = orderMsg.method;
 
-    let reply;
     if (method === 'handleCall') {
-      reply = await API.handleCall(message, from, nextState);
-    } else if (method === 'handleCast') {
-      reply = await API.handleCast(message, nextState);
+      nextMsg = await API.handleCall(orderMsg);
     } else {
-      reply = await API.handleInfo(message, nextState);
-    }
-    if (reply.status === Atom.ok) {
-      nextState = reply.state;
-    } else {
-      throw 'Not implemented yet';
+      throw 'Not Implemented';
     }
   }
-  const { message } = yield nextState;
-  const { state: finalState, status } = await API.terminate(message, nextState);
-  if (status === Atom.stop) {
-    return finalState;
-  } else {
-    throw 'Not implemented exit error';
-  }
+
+  // const { message } = yield message;
+  // const { state: finalState, status } = await API.terminate(message, nextState);
+  // if (status === Atom.stop) {
+  //   return finalState;
+  // } else {
+  //   throw 'Not implemented exit error';
+  // }
 }

@@ -10,21 +10,27 @@ test("we should have modules setup", () => {
 });
 
 
-describe('es7', () => {
+describe('es7 async generators', () => {
   const waitM = jest.fn(wait);
   const postWaitM = jest.fn();
+  const postYieldM = jest.fn();
 
   async function* ai(t) {
     await waitM(t);
     postWaitM();
     const xxx = yield 'dog';
+    postYieldM(xxx);
     return `${xxx}-end`;
   }
 
-  const proc = ai(1);
+  let proc;
+
+  beforeAll(() => {
+    proc = ai(1);
+  });
 
   test('merely making the iterator only run the first part', () => {
-    expect(waitM).toBeCalled();
+    expect(waitM).not.toBeCalled();
   });
 
   test('should not get to the post wait', () => {
@@ -32,12 +38,12 @@ describe('es7', () => {
   })
 
   describe('iterating', () => {
-    const promise = proc.next('cat');
+    let promise;
     let result = {};
-    beforeEach(async () => {
+    beforeAll(async () => {
+      promise = proc.next('doesnt matter');
       result = await promise;
     });
-
 
     it('should be a promise', () => {
       expect(promise).toBeDefined();
@@ -50,6 +56,34 @@ describe('es7', () => {
 
     it('should have the yielded out value', () => {
       expect(result.value).toBe('dog');
+    });
+
+    it('should have called the awaited method before yield', () => {
+      expect(waitM).toBeCalled();
+    });
+
+    it('should have called the post await method before yield', () => {
+      expect(postWaitM).toBeCalled();;
+    });
+
+    it('should not have called the post-yield method', () => {
+      expect(postYieldM).not.toBeCalled();
+    });
+
+    describe('terminating', () => {
+      let finalResult = {};
+      beforeAll(async () => {
+        finalResult = await proc.next('cat');
+      });
+      it('should be the terminal thing', () => {
+        expect(finalResult.done).toBeTruthy();
+      });
+      it('should return the expected value', () => {
+        expect(finalResult.value).toBe('cat-end');
+      });
+      it('should have called the post yield IO method', () => {
+        expect(postYieldM).toBeCalledWith('cat');
+      });
     });
   });
 });
