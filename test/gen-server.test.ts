@@ -1,7 +1,12 @@
 import { Atom } from '../src/atom';
 import { start, call } from '../src/gen-server';
 import { PS4, Game } from './mocks/ps4';
-import { OrderMessage, InitProcessMessage, Type } from '../src/message';
+import { 
+  OrderMessage, 
+  ReplyMessage,
+  InitProcessMessage, 
+  Type 
+} from '../src/message';
 import { LaunchServer, LaunchState } from './mocks/launch-server';
 
 describe('basic usage', () => {
@@ -24,7 +29,7 @@ describe('basic usage', () => {
   });
 
   describe('calling messages', () => {
-    let requestAuthReply;
+    let requestAuthReply: ReplyMessage<LaunchState>;
     beforeAll(async () => {
       const { process, state } = startReply;
       let orderMessage: OrderMessage<LaunchState> = {
