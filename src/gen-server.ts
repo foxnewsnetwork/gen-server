@@ -1,16 +1,16 @@
-import genProcess from './gen-process';
-import { Atom } from './atom';
-import { 
-  Type, 
-  NoreplyMessage, 
-  ReplyMessage, 
-  OrderMessage, 
+import genProcess from "./gen-process";
+import { Atom } from "./atom";
+import {
+  Type,
+  NoreplyMessage,
+  ReplyMessage,
+  OrderMessage,
   CallMessage,
   InitMessage,
   DidInitMessage,
   InitProcessMessage,
   Message
-} from './message';
+} from "./message";
 
 export interface GenServer<State> {
   init(sMsg: InitMessage<State>): Promise<DidInitMessage<State>>
@@ -31,16 +31,16 @@ export interface GenServer<State> {
 
 
 export async function call<State>(
-  this: AsyncIterableIterator<Message<State>>, 
-  ais: AsyncIterableIterator<Message<State>>, 
-  orderMsg: OrderMessage<State>, 
-  timeout=5000
+  this: AsyncIterableIterator<Message<State>>,
+  ais: AsyncIterableIterator<Message<State>>,
+  orderMsg: OrderMessage<State>,
+  timeout = 5000
 ): Promise<ReplyMessage<State>> {
   const callMsg: CallMessage<State> = Object.assign({
     from: this,
-    method: 'handleCall',
+    method: "handleCall",
     timeout
-  }, orderMsg); 
+  }, orderMsg);
   const { done, value } = await ais.next(callMsg);
   let replyMessage: ReplyMessage<State> = {
     status: done ? Atom.shutdown : value.status,
@@ -52,13 +52,13 @@ export async function call<State>(
 }
 
 // export function cast<State>(ais: AsyncIterableIterator<State>, msg: Message): Noreply<State> {
-//   ais.next({ message: msg, method: 'handleCast' });
+//   ais.next({ message: msg, method: "handleCast" });
 
 //   return new Noreply<State>(ais, Atom.ok);
 // }
 
 // export function reply<State>(ais: AsyncIterableIterator<State>, msg: Message): Noreply<State> {
-//   ais.next({ message: msg, method: 'handleInfo' });
+//   ais.next({ message: msg, method: "handleInfo" });
 
 //   return new Noreply<State>(ais, Atom.ok);
 // }
@@ -66,7 +66,7 @@ export async function call<State>(
 // export async function stop<State>(this: AsyncIterableIterator<State>, ais: AsyncIterableIterator<State>, reason: any, timeout=Infinity): Promise<Reply<State>> {
 //   const { done, value: lastState } = await ais.next({
 //     from: this,
-//     method: 'terminate',
+//     method: "terminate",
 //     reason,
 //     timeout
 //   });
@@ -80,8 +80,8 @@ interface StartOpts {
 }
 
 export async function start<State>(
-  API: GenServer<State>, 
-  args?: [any], 
+  API: GenServer<State>,
+  args?: [any],
   options?: StartOpts
 ): Promise<InitProcessMessage<State>> {
   const initMsg: InitMessage<State> = {
@@ -105,7 +105,7 @@ export async function start<State>(
    * for an idea of how es7 generators work
    * 
    * Theoreticaly, if we wished to do more process
-   * initialization, we'd do it here, but that's for
+   * initialization, we"d do it here, but that"s for
    * a future functionality as I discover if I need it
    * or not.
    * 
@@ -113,8 +113,8 @@ export async function start<State>(
    */
   await process.next();
   const initProcMsg: InitProcessMessage<State> = Object.assign(
-    {}, 
-    didInitMsg, 
+    {},
+    didInitMsg,
     { process, type: Type.initproc }
   );
   return initProcMsg;

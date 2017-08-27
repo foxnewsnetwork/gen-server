@@ -1,6 +1,6 @@
-import { GenServer } from './gen-server';
-import { Atom } from './atom';
-import { DidInitMessage, Message } from './message';
+import { GenServer } from "./gen-server";
+import { Atom } from "./atom";
+import { DidInitMessage, Message } from "./message";
 
 export default async function* genProcess<State>(API: GenServer<State>, didinitMsg: DidInitMessage<State>) {
   let nextMsg: Message<State> = didinitMsg;
@@ -10,10 +10,10 @@ export default async function* genProcess<State>(API: GenServer<State>, didinitM
     const orderMsg = yield nextMsg;
     method = orderMsg.method;
 
-    if (method === 'handleCall') {
+    if (method === "handleCall") {
       nextMsg = await API.handleCall(orderMsg);
     } else {
-      throw 'Not Implemented';
+      throw "Not Implemented";
     }
   }
 
@@ -22,6 +22,6 @@ export default async function* genProcess<State>(API: GenServer<State>, didinitM
   // if (status === Atom.stop) {
   //   return finalState;
   // } else {
-  //   throw 'Not implemented exit error';
+  //   throw "Not implemented exit error";
   // }
 }

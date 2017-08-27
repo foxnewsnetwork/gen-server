@@ -1,12 +1,12 @@
-import { Atom } from '../../src/atom';
-import { GenServer } from '../../src/gen-server';
-import { PS4, Game } from './ps4';
-import { 
-  Type, 
-  ReplyMessage, 
+import { Atom } from "../../src/atom";
+import { GenServer } from "../../src/gen-server";
+import { PS4, Game } from "./ps4";
+import {
+  Type,
+  ReplyMessage,
   DidInitMessage,
   OrderMessage
-} from '../../src/message';
+} from "../../src/message";
 
 export class LaunchState {
   ps4: PS4
@@ -45,11 +45,11 @@ export const LaunchServer: GenServer<LaunchState> = {
   },
   handleCall(orderMsg: OrderMessage<LaunchState>) {
     const {
-      order: { type, data: game }, 
+      order: { type, data: game },
       state
     } = orderMsg;
-    
-    if (type === 'requestAuthCode') {
+
+    if (type === "requestAuthCode") {
       return requestAuthCode(game, state);
     } else {
       throw `Bad type: ${type}`;

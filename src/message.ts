@@ -1,4 +1,4 @@
-import { Atom } from './atom';
+import { Atom } from "./atom";
 
 export enum Type {
   reply, noreply, call, order, init, didinit, initproc
@@ -24,7 +24,7 @@ export interface InitMessage<State> extends Message<State> {
   options?: any
 }
 
-export type OrderType = 'handleCall' | 'handleCast' | 'handleInfo' | 'terminate';
+export type OrderType = "handleCall" | "handleCast" | "handleInfo" | "terminate";
 
 export interface OrderMessage<T> extends Message<T> {
   method: OrderType
